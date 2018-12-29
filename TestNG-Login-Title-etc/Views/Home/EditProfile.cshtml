@@ -1,0 +1,92 @@
+﻿@model EAD_2nd_Dilerverable.Models.ProfileViewClass
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    String base64 = null;
+    String imgSrc = null;
+    if (Model.SelfUser.PImage != null)
+    {
+        base64 = Convert.ToBase64String(Model.SelfUser.PImage);
+        imgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        imgSrc = "../Images/noPro.gif";
+    }
+    
+   // Response.AppendCookie(Request.Cookies["username"]);
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/js/bootstrap.js"></script>
+    <link href="~/css/style1.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/reset.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <script src="~/Scripts/jquery-2.1.4.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/modernizr.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <title>myDiary</title>
+</head>
+<body>
+    
+    <div class="row" style="margin:5px">
+        <div class="col-lg-4">
+            <img src="@imgSrc" alt="profile_pic" />
+        </div>
+        <div class="col-lg-8">
+            <div>
+                @using (Html.BeginForm("EditPage", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) 
+                { 
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>
+                                    <h1 class="h1">@Model.SelfUser.FName @Model.SelfUser.LName</h1>
+                                </td>
+                                <td>
+                                    <button style="position:relative;top:25px;height:34px;border-radius:5px;width:70px" type="submit" class="btn-primary">Submit</button>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Date Of Birth</th>
+                                <td>@Html.TextBox("DOB",  @Model.SelfUser.DOB.Value.Date.ToString("dd MMMM yyyy") ,new { @class = "form-control"}) @*<input class="form-control" type="text" name="dob" value="@Model.SelfUser.DOB.Value.Date.ToString("dd MMMM yyyy")" />*@</td>
+                            </tr>
+                            <tr>
+                                <th>From</th>
+                                <td>@Html.TextBox("Address",@Model.SelfUser.Address ,new { @class="form-control"})@*<input class="form-control" type="text" name="from" value="@Model.SelfUser.Address" />*@</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>@Html.TextBox("Email",@Model.SelfUser.Email, new { @class = "form-control" })@*<input class="form-control" type="text" name="email" value="@Model.SelfUser.Email" /></td>*@
+                            </tr>
+                            <tr>
+                                <th>Total Pages Written</th>
+                                <td>172</td>
+                            </tr>
+                            <tr>
+                                <th>Date of Joining</th>
+                                <td>@Model.SelfUser.DOJ.Value.Date.ToString("dd MMMM yyyy")</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="btn-default" type="file" name="pimage1" value="Change Profile Picture" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

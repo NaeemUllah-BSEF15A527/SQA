@@ -1,0 +1,201 @@
+﻿@model IQueryable<EAD_2nd_Dilerverable.Models.siteUser>
+@{
+
+    Layout = null;
+    String base64 = null;
+    String selfimgSrc = null;
+    if (Session["pic"] != null)
+    {
+        base64 = Convert.ToBase64String(Session["pic"] as Byte[]);
+        selfimgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        selfimgSrc = "../Images/noPro.gif";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/js/bootstrap.js"></script>
+    <link href="~/css/style1.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/reset.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <script src="~/Scripts/jquery-2.1.4.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/modernizr.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <title>myDiary</title>
+</head>
+<body>
+    <nav class="nav navbar-default navbar-fixed-top" role="navigation">
+        <div style="margin:20px;" class="navbar-header">
+            @Html.ActionLink("myDiary", "Index", "Home", null, new { @class = "heading", style = "color:dodgerblue;" })
+        </div>
+
+        <ul style="margin:10px" class="navbar-nav nav navbar-right">
+            <li class="dropdown">
+                <a style="position:relative;top:10px;color:dodgerblue;" class="labels" data-toggle="dropdown" href="#">@Session["FName"] @Session["LName"] <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
+                </ul>
+            </li>
+            <li>
+                <img height="50" width="40" style="margin-top:10px;margin-right:20px" src="@selfimgSrc" />
+            </li>
+        </ul>
+
+        <div class="navbar navbar-form navbar-right">
+            @using (@Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "navbar navbar-form navbar-right", style = "position:relative;top:10px;left:-100px" }))
+            {
+                <div class="form-group">
+                    <div class="input-group">
+                        @Html.TextBox("key", null, new { @class = "form-control", placeholder = "Search", style = "width:500px" })
+                        @*<input style="width:500px" type="text" class="form-control" placeholder="Search">*@
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit" style="height:34px"><img src="~/images/glyphicons-28-search.png" height="18" alt="Alternate Text" /></button>
+                        </span>
+                    </div>
+                </div>
+            }
+        </div>
+    </nav>
+
+    <br /><br /><br /> <br /> <br />
+    <div class="row">
+        <div class="col-lg-12 navdiv navbar-default table-bordered" style="border-bottom-color:dodgerblue">
+            <h2 class="h2" style="margin-left:20px">Search Results</h2>
+            <div class="input-lg nav navbar-form">
+                Name: <input type="text" id="name" class="form-control" />
+                Location: <input type="text" id="loc" class="form-control" />
+                <button class="form-control btn-info" id="searchbtn">Search</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#searchbtn").on('click', function () {
+            var n = $('#name').val();
+            var l = $('#loc').val();
+            if (l == null || l == "")
+                l = "."
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetResults", "Home")',
+                data: { name: n, location: l },
+                
+                async: false,
+                success: function (result) {
+                    if (result != null) {
+                        $("#showResults").html("<tr>" +
+                           "<td>" +
+                               "<img src='" + result[0].PImage + "' alt='flana' height='120' width='115' style='position:relative;left:100px' />" +
+                           "</td>" +
+                           "<td>" +
+                               "<form action='profile' method='post'>" +
+                                   "<button type='submit' class='no-touch' style='width:400px ; background-color:transparent;border-bottom-style:none;border-right-color:transparent'>" +
+                                       "<table class='table table-striped' style='position:relative;left:-140px'>" +
+                                           "<tr>" +
+                                               "<th style='font-size:large;background-color:white; font-weight:bold ; color:black'>" + result[0].FName + " " + result[0].LName + "</th>" +
+                                           "</tr>" +
+                                           "<tr style='background-color: white'>" +
+                                               "<th>From</th>" +
+                                               "<td align='left'>" + result[0].Address + "</td>" +
+                                           "</tr>" +
+
+                                       "</table>" +
+                                   "</button>" +
+                                   "<input type='hidden' name='email' value=" + result[0].Email + "/>" +
+                               "</form>" +
+                           "</td>" +
+                       "</tr>");
+                    }
+                    if (result.length > 1) {
+                        for (var i = 1 ; i < result.length ; i++) {
+                            $("#showResults").append("<tr>" +
+                               "<td>" +
+                                   "<img src='" + result[i].PImage + "' alt='flana' height='120' width='115' style='position:relative;left:100px' />" +
+                               "</td>" +
+                               "<td>" +
+                                   "<form action='profile' method='post'>" +
+                                       "<button type='submit' class='no-touch' style='width:400px ; background-color:transparent;border-bottom-style:none;border-right-color:transparent'>" +
+                                           "<table class='table table-striped' style='position:relative;left:-140px'>" +
+                                               "<tr>" +
+                                                   "<th style='font-size:large;background-color:white; font-weight:bold ; color:black'>" + result[i].FName + " " + result[i].LName + "</th>" +
+                                               "</tr>" +
+                                               "<tr style='background-color: white'>" +
+                                                   "<th>From</th>" +
+                                                   "<td align='left'>" + result[i].Address + "</td>" +
+                                               "</tr>" +
+
+                                           "</table>" +
+                                       "</button>" +
+                                       "<input type='hidden' name='email' value=" + result[i].Email + "/>" +
+                                   "</form>" +
+                               "</td>" +
+                           "</tr>");
+                        }
+                    }
+                }
+            });
+                
+        });
+    </script>>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-striped" id="showResults">
+
+                @foreach (var user in @Model)
+                {
+
+                    String imgSrc1 = null;
+                    if (user.PImage != null)
+                    {
+                        base64 = Convert.ToBase64String(user.PImage);
+                        imgSrc1 = String.Format("data:image/jpg;base64,{0}", base64);
+                    }
+                    else
+                    {
+                        imgSrc1 = "../Images/noPro.gif";
+                    }
+                    <tr>
+                        <td>
+                            <img src="@imgSrc1" alt="flana" height="120" width="115" style="position:relative;left:100px" />
+                        </td>
+                        <td>
+                            <form action="Profile" method="post">
+                                <button type="submit" class="no-touch" style="width:400px ; background-color:transparent;border-bottom-style:none;border-right-color:transparent">
+                                    <table class="table table-striped" style="position:relative;left:-140px">
+                                        <tr>
+                                            <th style="font-size:large;background-color:white; font-weight:bold ; color:black">@user.FName @user.LName</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Date Of Birth</th>
+                                            <td align="left">@user.DOB.Value.Date.ToString("dd MMMM yyyy")</td>
+                                        </tr>
+                                        <tr style="background-color: white">
+                                            <th>From</th>
+                                            <td align="left">@user.Address</td>
+                                        </tr>
+
+                                    </table>
+                                </button>
+                                <input type="hidden" name="email" value="@user.Email" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+
+
+            </table>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+﻿@model EAD_2nd_Dilerverable.Models.ProfileViewClass
+@{
+    int i = 0;
+    Layout = null;
+    String base64 = null;
+    String selfimgSrc = null, visitimgSrc = null;
+    List<String> postImages = new List<String>();
+    if (Model.SelfUser.PImage != null)
+    {
+        base64 = Convert.ToBase64String(Model.SelfUser.PImage);
+        selfimgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        selfimgSrc = "../Images/noPro.gif";
+    }
+    if (Model.VisitUser.PImage != null)
+    {
+        base64 = Convert.ToBase64String(Model.VisitUser.PImage);
+        visitimgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        visitimgSrc = "../Images/noPro.gif";
+    }
+
+    String profiletab = "";
+    String diarytab = "active";
+    String val = ViewBag.profileView;
+    if (val == "active")
+    {
+        profiletab = "active";
+        diarytab = "";
+    }
+
+    int j;
+    //Response.AppendCookie(Request.Cookies["username"]);
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/style1.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/reset.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <script src="~/Scripts/jquery-2.1.4.js"></script>
+    <script src="~/js/main.js"></script>
+    <link rel="stylesheet" href="~/css/jquery-ui.css">
+    <script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <title>myDiary</title>
+</head>
+
+<body>
+    <nav class="nav navbar-default navbar-fixed-top" role="navigation">
+        <div style="margin:20px;" class="navbar-header">
+            @Html.ActionLink("myDiary","HomePage","Home", null , new { @class="heading" , style="color:dodgerblue;" })
+        </div>
+
+        <ul style="margin:10px" class="navbar-nav nav navbar-right">
+            <li class="dropdown">
+                <a style="position:relative;top:10px;color:dodgerblue;" class="labels" data-toggle="dropdown" href="#">@Session["FName"] @Session["LName"] <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
+                </ul>
+            </li>
+            <li>
+                <img height="50" width="40" style="margin-top:10px;margin-right:20px" src="@selfimgSrc" />
+            </li>
+        </ul>
+
+        <div class="navbar navbar-form navbar-right">
+            @using (@Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "navbar navbar-form navbar-right", style = "position:relative;top:10px;left:-100px" }))
+            {
+                <div class="form-group">
+                    <div class="input-group">
+                        @Html.TextBox("key", null, new { @class = "form-control", placeholder = "Search", style = "width:500px" , id = "SearchBar"})
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit" style="height:34px"><img src="~/images/glyphicons-28-search.png" height="18" alt="Alternate Text" /></button>
+                        </span>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <link href="~/css/jquery-ui.css" rel="Stylesheet"></link>
+        <script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#SearchBar").on('input', function () {
+                    var key = $('#SearchBar').val();
+                    $.getJSON('Home/SearchPeople?key=' + key, function (data) {
+                        var availableTags = data;
+                        aysnc = false;
+                        $("#SearchBar").autocomplete({
+                            source: availableTags
+                        });
+                    });
+                });
+
+            });
+        </script>
+        
+    </nav>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-lg-12 navdiv navbar-default table-bordered" style="border-bottom-color:dodgerblue">
+            <ul class="nav navbar-nav">
+                <li class="navbar-link" style="margin-top:20px;margin-left:20px;margin-bottom:10px">
+                    <img src="@visitimgSrc" height="30" width="20" alt="Alternate Text" />
+                </li>
+                <li style="position:relative;top:10px;text-decoration:underline">
+                    <a href="#">@Model.VisitUser.FName @Model.VisitUser.LName</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-right navbar-nav" role="navigation">
+                <li class ="@profiletab">
+                    <a href="/Home/Profile" style="margin-right:20px">
+                        Profile
+                    </a>
+                </li>
+                <li class ="@diarytab">
+                    <a href="/Home/Index" style="margin-right:20px">
+                        Diary
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+    @RenderBody()
+    @Scripts.Render("~/bundles/modernizr")
+    
+    @RenderSection("scripts", required: false)
+
+    <footer class="panel-footer text-right">myDiary 2015 copyright &reg All Rights Reserved </footer>
+</body>
+</html>

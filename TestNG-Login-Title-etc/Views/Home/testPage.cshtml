@@ -1,0 +1,112 @@
+﻿@model EAD_2nd_Dilerverable.Models.ProfileViewClass
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    String base64 = null;
+    String selfimgSrc = null, visitimgSrc = null;
+    List<String> postImages = new List<String>();
+    if (Model.SelfUser.PImage != null)
+    {
+        base64 = Convert.ToBase64String(Model.SelfUser.PImage);
+        selfimgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        selfimgSrc = "~/Images/noPro.gif";
+    }
+    if (Model.VisitUser.PImage != null)
+    {
+        base64 = Convert.ToBase64String(Model.VisitUser.PImage);
+        visitimgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        visitimgSrc = "~/Images/noPro.gif";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    
+    <h1 style="margin:20px;text-decoration:underline;font-size:40px;font-family:'Lucida Handwriting';text-align:center">
+        @Model.VisitUser.FName's Diary
+    </h1>
+
+    <section id="cd-timeline" class="cd-container">
+
+        @if (@Model.VisitUser.Email == @Model.SelfUser.Email)
+        {
+            <div class="cd-timeline-block">
+                <div class="cd-timeline-img cd-picture">
+                    <img src="~/images/cd-icon-picture.svg" alt="Picture">
+                </div>
+
+                <div class="cd-timeline-content" style="background-color:#e9f0f5">
+                    <form action="/Home/Post" method="post" enctype="multipart/form-data">
+                        <span style="font-family:'Lucida Handwriting';font-size:large;font-weight:bold;">What happend on :</span>
+                        <input type="date" name="Date" class="ui-datepicker" value="@DateTime.Today.ToString("yyyy-MM-dd")" id="mydate" style="border-radius:7px;color:dodgerblue;text-align:center;font-size:larger;width:272px;font-weight:bold;letter-spacing:1px;background-color:transparent;border-color:transparent;font-family:'Lucida Handwriting'" />
+                        @Html.TextArea("Post1", new { type = "text", style = "padding:10px;width:480px;height:100px;font-family:'Lucida Handwriting';margin-top:5px;" })
+                        <img id="blah" src="#" hidden="hidden" width="480" style="margin-top:5px" height="320" />
+                        <span style="height:30px;background-color:transparent;border-color:transparent;margin-left:333px" class="btn btn-default btn-file">
+                            <img src="~/Images/glyphicons-12-camera.png" alt="Upload" /> <input type="file" id="imgInp" name="Image">
+                        </span>
+                        <input style="margin-top:5px;width:80px;border-radius:5px;background-color:dodgerblue" type="submit" value="Share" class="btn-primary" />
+
+
+                        <span class="cd-date">@DateTime.Today.ToString("MMM dd yyyy")</span>
+                    </form>
+
+                    <script>
+                        function readURL(input) {
+                            if (input.files && input.files[0]) {
+                                var reader = new FileReader();
+
+                                reader.onload = function (e) {
+                                    $('#blah').attr('src', e.target.result);
+                                }
+
+                                reader.readAsDataURL(input.files[0]);
+                            }
+                        }
+
+                        $("#imgInp").change(function () {
+                            readURL(this);
+                            $("#blah").fadeIn(1000);
+                        });
+                    </script>
+                </div>
+            </div>
+        }
+        @foreach (var posts in @Model.VisitUser.Posts)
+        {
+            <div class="cd-timeline-block">
+                <div class="cd-timeline-img cd-picture">
+                    <img src="~/images/cd-icon-picture.svg" alt="Picture">
+                </div>
+
+                <div class="cd-timeline-content">
+                    <h2>An Amazing Day</h2>
+                    <p>@posts.Post1</p>
+                    @{
+            base64 = null;
+            if (Model.SelfUser.PImage != null)
+            {
+                base64 = Convert.ToBase64String(posts.Image);
+                postImages.Add(String.Format("data:image/jpg;base64,{0}", base64));
+            }
+                    }
+                    <img src="@postImages.ElementAt(i++)" alt="image" />
+                    <span class="cd-date">@posts.Date.Value.ToString("MMM dd yyyy")</span>
+                </div>
+            </div>
+
+        }
+    </section>
+</body>
+</html>

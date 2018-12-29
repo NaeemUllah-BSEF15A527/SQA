@@ -1,0 +1,127 @@
+﻿@model EAD_2nd_Dilerverable.Models.siteUser
+@{
+    Layout = null;
+   
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>It is myDiary</title>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/Scripts/jquery-1.8.2.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('repas').on('onfocusout', function () {
+                var pas = $('pas').val();
+                if (pas != $('repas').val())
+                    $('#warning').removeAttr('hidden');
+                else
+                    $('#pasWarning').attr('hidden', 'hidden');
+
+            });
+        });
+    </script>
+
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/style1.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="nav navbar-default navbar-fixed-top" role="navigation">
+        <div style="margin-left:20px;margin-top:10px" class="navbar-header">
+            <a class="heading" href="#">myDiary</a>
+        </div>
+        <div>
+            <form class="navbar-form navbar-right" style="margin-top:20px;margin-right:20px" action="/Login/GoLogin" method="post">
+                @Html.Label("Username") &nbsp;
+                @Html.TextBox("Email", null, new { @class = "form-control", style = "width:250px", placeholder = "Username", required = "required" }) &nbsp;
+                
+                @Html.LabelFor(m => m.Password) &nbsp;
+                @Html.TextBox("Password", null, new { @class = "form-control", placeholder = "Password", type = "password", required = "required" }) &nbsp;
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+        
+    </nav>
+
+    <br /><br /><br />
+
+    <div class="row">
+        <div class="col-lg-9">
+            <h3 style="font-size:25px; font-family:'Lucida Handwriting'">
+                What is myDiary?
+            </h3>
+            <p>
+                <span style="font-size:20px; font-weight:bold; font-family:'Lucida Handwriting'">myDiary</span> &nbsp;is just like your personal diary. Many people have habbit of writing what
+                they do on daily basis. This helps them improving their decision making as when they read their previous life events they learn from their mistakes. This platform not only
+                helps you to write your personal diary but also gives you freedom of sharing your life events with everyone. So they can learn from your experiences and improve their lives.
+                People can also share ideas on different lifetime events as well. Start writing your own diary today, it may help someone around the world
+                reshaping one's life. <h4 style="color:dodgerblue;font-weight:bold"> Start Fresh, Start Now!</h4>
+            </p>
+            <img src="~/Images/people 2.jpg" alt="millions_are_waiting" width="1100" height="400" />
+        </div>
+        <div class="col-lg-3 ">
+            @using (@Html.BeginForm("Register", "Login", FormMethod.Post))
+            {
+                <label class="h3" id="login">Sign Up</label>
+                @Html.Label("First Name", new { @class = "inputs" })
+                @Html.TextBoxFor(m => m.FName, null, new { @class = "form-control", placeholder = "First Name", required = "required" })
+
+                @Html.Label("Last Name", new { @class = "inputs" })
+                @Html.TextBoxFor(m => m.LName, null, new { @class = "form-control", placeholder = "Last Name", required = "required" })
+
+                @Html.Label("Date of Birth", new { @class = "inputs" })
+                @Html.TextBoxFor(m => m.DOB, null, new { @class = "form-control", id = "datepicker",type = "date", required = "required" })
+
+                @Html.Label("From", new { @class = "inputs" })
+                @Html.TextBoxFor(m => m.Address, null, new { @class = "form-control", placeholder = "Format : City, Country", required = "required" })
+
+                @Html.Label("Email", new { @class = "inputs" })
+                @Html.TextBoxFor(m => m.Email, null, new { @class = "form-control", placeholder = "abc@example.com", type = "email", id = "emailID", onfocusout = "checkAvalability()", required = "required" })
+                
+                <div class="alert-warning" id="warning" hidden>*Already in use.</div>
+                <div class="alert-warning" id="warning1" hidden>Wrong Email Address!</div>
+
+                @Html.Label("Password", new { @class = "inputs" })
+                @Html.TextBoxFor(m => m.Password, null, new { @class = "form-control", placeholder = "Password", id = "pas", type = "password", required = "required" })
+                <div class="alert-warning" id="pasWarning" hidden>*Password don't matches</div>
+                <label class="inputs">Re-Enter Password</label>
+                <input class="form-control" type="password" id="repas" value="" placeholder="Password" required />
+                <button style="margin-top:5px; font-size:20px ;height:50px" class="form-control btn-lg btn-success" id="submitbtn" type="submit" onsubmit="check()" disabled>Let's Go</button>
+            }
+        </div>
+    </div>
+    <script src="~/js/mailcheck.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    <script>
+        function checkAvalability() {
+            
+            var email = $('#emailID').val();
+            //if(!isValidEmailAddress(email))
+            //{
+            //    $('#warning1').removeAttr('hidden');
+            //}
+            //else
+            //    $('#warning1').removeAttr('hidden');
+            $.getJSON("/Login/CheckAvalability?email=" + email, function (data) {
+                if (data == false) {
+                    $('#warning').removeAttr('hidden');
+                    $('#submitbtn').attr('disabled', 'disabled');
+                }
+                else {
+                    $('#submitbtn').removeAttr('disabled');
+                    $('#warning').attr('hidden', 'hidden');
+                }
+
+            });
+
+        }
+                    
+    </script>
+
+
+
+    <footer class="panel-footer text-right">myDiary 2015 copyright &reg All Rights Reserved </footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Photos</title>
+    <script src="../Scripts/jquery-1.8.2.js"></script>
+    <link href="../css/jquery-ui.css" rel="stylesheet" />
+   
+    <script src="../Scripts/jquery-ui-1.8.24.js"></script>
+    <link href="../css/fbphotobox.css" rel="stylesheet" type="text/css" />
+    <script src="../js/fbphotobox.js"></script>
+    <script>
+	$(document).ready(function() {
+		$(".fbphotobox img").fbPhotoBox({
+			rightWidth: 360,
+			leftBgColor: "black",
+			rightBgColor: "white",
+			footerBgColor: "black",
+			overlayBgColor: "#222",
+			containerClassName: 'fbphotobox',
+			imageClassName: 'photo',
+			onImageShow: function() {
+				$(".fbphotobox img").fbPhotoBox("addTags",
+						[{x:0.3,y:0.3,w:0.3,h:0.3}]
+				);
+				$(".fbphotobox-image-content").html('<div style="font-size:16px;">'+$(this).attr("alt")+'</div>'+$(this).attr("src"));
+			}
+		});
+
+	});
+    </script>
+    <style>
+        body {
+            font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .fbphotobox img {
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+            .fbphotobox img:hover {
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                border: 5px solid #4AE;
+            }
+    </style>
+</head>
+<body>
+    <div class="fbphotobox">
+        <a><img class="photo" fbphotobox-src="../Images/people 2.jpg" alt="Dummmy Image<br>Very Coool!" src="../Images/people 2.jpg" /></a>
+        <a><img class="photo" fbphotobox-src="../Images/noPro.gif" src="../Images/noPro.gif" /></a>
+        
+    </div>
+
+</body>
+</html>

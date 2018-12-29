@@ -1,0 +1,92 @@
+﻿@model EAD_2nd_Dilerverable.Models.ProfileViewClass
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    String base64 = null;
+    String selfimgSrc = null , visitimgSrc = null;
+    if (Model.SelfUser.PImage != null)
+    {
+        base64 = Convert.ToBase64String(Model.SelfUser.PImage);
+        selfimgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        selfimgSrc = "../Images/noPro.gif";
+    }
+    if (Model.VisitUser.PImage != null)
+    {
+        base64 = Convert.ToBase64String(Model.VisitUser.PImage);
+        visitimgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+    else
+    {
+        visitimgSrc = "../Images/noPro.gif";
+    }
+
+    
+    
+    Session.Add("visitUser",@Model.VisitUser.Email);
+    //Response.AppendCookie(mycookie);
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/js/bootstrap.js"></script>
+    <link href="~/css/style1.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/reset.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <script src="~/Scripts/jquery-2.1.4.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/modernizr.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <title>myDiary</title>
+</head>
+<body>
+    <div class="row" style="margin:5px">
+        <div class="col-lg-4">
+            <img src="@visitimgSrc" alt="Profile_Pic" />
+        </div>
+        <div class="col-lg-8">
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>
+                                <h1 class="h1">@Model.VisitUser.FName @Model.VisitUser.LName @if(@Model.VisitUser.Email == @Model.SelfUser.Email){<a href="/Home/EditProfile"><img src="~/images/glyphicons-151-edit.png" alt="edit" /></a>}</h1>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Date Of Birth</th>
+                            <td>@Model.VisitUser.DOB.Value.Date.ToString("dd MMMM yyyy")</td>
+                        </tr>
+                        <tr>
+                            <th>From</th>
+                            <td>@Model.VisitUser.Address</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>@Model.VisitUser.Email</td>
+                        </tr>
+                        <tr>
+                            <th>Total Pages Written</th>
+                            <td>@Model.VisitUser.Posts.Count</td>
+                        </tr>
+                        <tr>
+                            <th>Date of Joining</th>
+                            <td>@Model.VisitUser.DOJ.Value.Date.ToString("dd MMMM yyyy")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
